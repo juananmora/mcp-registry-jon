@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mcp-registry-config
+  namespace: mcp-registry
+  labels:
+    app.kubernetes.io/name: mcp-registry
+    app.kubernetes.io/component: registry
+data:
+  MCP_REGISTRY_ENVIRONMENT: "test"
+  MCP_REGISTRY_ENABLE_ANONYMOUS_AUTH: "true"
+  MCP_REGISTRY_SEED_FROM: "/data/seed.json"
+  MCP_REGISTRY_ENABLE_REGISTRY_VALIDATION: "false"
+  MCP_REGISTRY_OIDC_ENABLED: "false"
+  MCP_REGISTRY_OIDC_ISSUER: ""
+  MCP_REGISTRY_OIDC_CLIENT_ID: ""
+  MCP_REGISTRY_OIDC_EXTRA_CLAIMS: "[]"
+  MCP_REGISTRY_OIDC_EDIT_PERMISSIONS: ""
+  MCP_REGISTRY_OIDC_PUBLISH_PERMISSIONS: ""

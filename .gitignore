@@ -1,0 +1,11 @@
+# Secrets / configuracion local
+.env
+
+# Salidas y config de herramientas locales
+.playwright-mcp/
+.claude/
+.vscode/
+
+# Volcados de Playwright (no son parte del proyecto)
+carvajal.md
+news-page.md

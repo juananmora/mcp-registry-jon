@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+  namespace: mcp-registry
+  labels:
+    app.kubernetes.io/name: mcp-registry
+    app.kubernetes.io/component: registry
+    app.kubernetes.io/part-of: mcp-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mcp-registry
+      app.kubernetes.io/component: registry
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mcp-registry
+        app.kubernetes.io/component: registry
+        app.kubernetes.io/part-of: mcp-registry
+    spec:
+      automountServiceAccountToken: false
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: POSTGRES_PASSWORD
+          command:
+            - sh
+            - -c
+            - until pg_isready -h postgres -p 5432 -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do echo "waiting for postgres"; sleep 2; done
+      containers:
+        - name: registry
+          image: ghcr.io/modelcontextprotocol/registry:1.7.8
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: MCP_REGISTRY_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_ENVIRONMENT
+            - name: MCP_REGISTRY_ENABLE_ANONYMOUS_AUTH
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_ENABLE_ANONYMOUS_AUTH
+            - name: MCP_REGISTRY_SEED_FROM
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_SEED_FROM
+            - name: MCP_REGISTRY_ENABLE_REGISTRY_VALIDATION
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_ENABLE_REGISTRY_VALIDATION
+            - name: MCP_REGISTRY_OIDC_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_OIDC_ENABLED
+            - name: MCP_REGISTRY_OIDC_ISSUER
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_OIDC_ISSUER
+            - name: MCP_REGISTRY_OIDC_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_OIDC_CLIENT_ID
+            - name: MCP_REGISTRY_OIDC_EXTRA_CLAIMS
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_OIDC_EXTRA_CLAIMS
+            - name: MCP_REGISTRY_OIDC_EDIT_PERMISSIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_OIDC_EDIT_PERMISSIONS
+            - name: MCP_REGISTRY_OIDC_PUBLISH_PERMISSIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: mcp-registry-config
+                  key: MCP_REGISTRY_OIDC_PUBLISH_PERMISSIONS
+            - name: MCP_REGISTRY_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mcp-registry-secrets
+                  key: MCP_REGISTRY_DATABASE_URL
+            - name: MCP_REGISTRY_GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: mcp-registry-secrets
+                  key: MCP_REGISTRY_GITHUB_CLIENT_ID
+            - name: MCP_REGISTRY_GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mcp-registry-secrets
+                  key: MCP_REGISTRY_GITHUB_CLIENT_SECRET
+            - name: MCP_REGISTRY_JWT_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mcp-registry-secrets
+                  key: MCP_REGISTRY_JWT_PRIVATE_KEY
+          volumeMounts:
+            - name: registry-seed
+              mountPath: /data
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /v0/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /v0/ping
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 100m
+              ephemeral-storage: 256Mi
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              ephemeral-storage: 512Mi
+              memory: 512Mi
+      volumes:
+        - name: registry-seed
+          configMap:
+            name: mcp-registry-seed
+            items:
+              - key: seed.json
+                path: seed.json

@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mcp-registry
+  namespace: mcp-registry
+  labels:
+    app.kubernetes.io/name: mcp-registry
+    app.kubernetes.io/component: ingress
+    app.kubernetes.io/part-of: mcp-registry
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-path: /v0/ping
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    # Descomenta si quieres HTTPS con ACM:
+    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-1:111122223333:certificate/replace-me
+spec:
+  ingressClassName: alb
+  rules:
+    - host: mcp-registry.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: registry
+                port:
+                  number: 80
