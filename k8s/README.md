@@ -20,7 +20,7 @@ Este directorio contiene los manifiestos para desplegar `mcp-registry` y `postgr
 
 Servers sembrados en `01-registry-seed-configmap.yaml`:
 
-- `io.github.github/github-mcp-server-remote` v0.19.1 — remoto hosted en `https://api.githubcopilot.com/mcp/` (transport `streamable-http`, sin Docker local).
+- `io.github.github/github-mcp-server-remote` v0.33.0 — remoto en `https://copilot-api.bbva.ghe.com/mcp` (GitHub Enterprise BBVA, transport `streamable-http`, sin Docker local).
 - `io.github.microsoft/playwright-mcp` v0.0.75 — npm `@playwright/mcp` (transport `stdio`).
 
 ## Requisitos en EKS
