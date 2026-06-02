@@ -21,6 +21,14 @@ Esta carpeta contiene una variante local de los manifiestos para probar `mcp-reg
 - `07-registry-service.yaml`: servicio `NodePort` para acceder al registry desde tu máquina.
 - `kustomization.yaml`: archivo estándar de Kustomize para desplegar todo el conjunto.
 
+## Catalogo actual
+
+Servers sembrados en `01-registry-seed-configmap.yaml`:
+
+- `io.github.github/github-mcp-server` v0.19.1 — local, paquete OCI `ghcr.io/github/github-mcp-server` (transport `stdio`, requiere `GITHUB_PERSONAL_ACCESS_TOKEN`).
+- `io.github.github/github-mcp-server-remote` v0.19.1 — remoto hosted en `https://api.githubcopilot.com/mcp/` (transport `streamable-http`, sin Docker local).
+- `io.github.microsoft/playwright-mcp` v0.0.75 — npm `@playwright/mcp` (transport `stdio`).
+
 ## Despliegue
 
 ```text

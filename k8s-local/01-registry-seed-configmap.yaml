@@ -73,6 +73,22 @@ data:
       },
       {
         "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+        "name": "io.github.github/github-mcp-server-remote",
+        "description": "GitHub MCP server remoto (hosted por GitHub) - mismas capacidades sobre HTTP, sin Docker local.",
+        "repository": {
+          "url": "https://github.com/github/github-mcp-server",
+          "source": "github"
+        },
+        "version": "0.19.1",
+        "remotes": [
+          {
+            "type": "streamable-http",
+            "url": "https://api.githubcopilot.com/mcp/"
+          }
+        ]
+      },
+      {
+        "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
         "name": "io.github.microsoft/playwright-mcp",
         "description": "Playwright Tools for MCP",
         "repository": {

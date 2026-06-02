@@ -77,6 +77,7 @@ Definido en `data/seed.json`. Formato: **array JSON plano** con objetos `ServerJ
 
 Actualmente sembrado con:
 - `io.github.github/github-mcp-server` v0.19.1 (OCI: `ghcr.io/github/github-mcp-server`)
+- `io.github.github/github-mcp-server-remote` v0.19.1 (remoto: `https://api.githubcopilot.com/mcp/`, transport `streamable-http`)
 - `io.github.microsoft/playwright-mcp` v0.0.75 (npm: `@playwright/mcp`)
 
 ## Anadir / quitar MCPs
