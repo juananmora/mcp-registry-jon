@@ -76,7 +76,6 @@ curl -s "http://localhost:8080/v0/servers/io.github.github%2Fgithub-mcp-server/v
 Definido en `data/seed.json`. Formato: **array JSON plano** con objetos `ServerJSON` (no envolver en `{"servers":[...]}` — eso es el formato de salida del endpoint, no de entrada para el seed).
 
 Actualmente sembrado con:
-- `io.github.github/github-mcp-server` v0.19.1 (OCI: `ghcr.io/github/github-mcp-server`)
 - `io.github.github/github-mcp-server-remote` v0.19.1 (remoto: `https://api.githubcopilot.com/mcp/`, transport `streamable-http`)
 - `io.github.microsoft/playwright-mcp` v0.0.75 (npm: `@playwright/mcp`)
 
